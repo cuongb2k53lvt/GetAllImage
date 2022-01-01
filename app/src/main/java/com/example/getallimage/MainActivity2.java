@@ -8,6 +8,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -20,7 +21,7 @@ import java.util.List;
 public class MainActivity2 extends AppCompatActivity {
     ViewPager2 vpImage;
     ViewPagerAdapter viewPagerAdapter;
-    int imgPosition;
+    static int imgPosition;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,32 +41,11 @@ public class MainActivity2 extends AppCompatActivity {
         List<String> arrImg = new GetAllImage(this).getAllImg();
         imgPosition = getIntent().getExtras().getInt("ImgPosition");
         viewPagerAdapter = new ViewPagerAdapter(this);
-        viewPagerAdapter.setPhotoViewMode("Portrait");
         vpImage.setAdapter(viewPagerAdapter);
         vpImage.setPageTransformer(new MyPageTransformer());
         viewPagerAdapter.setImage(arrImg);
         vpImage.setCurrentItem(imgPosition);
+        Log.e("BUG","1");
     }
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        //Set view mode cho view pager, màn hình ngang, dọc
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            viewPagerAdapter = new ViewPagerAdapter(this);
-            viewPagerAdapter.setPhotoViewMode("Landscape");
-            List<String> arrImg = new GetAllImage(this).getAllImg();
-            vpImage.setAdapter(viewPagerAdapter);
-            vpImage.setPageTransformer(new MyPageTransformer());
-            viewPagerAdapter.setImage(arrImg);
-            vpImage.setCurrentItem(imgPosition);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            viewPagerAdapter = new ViewPagerAdapter(this);
-            viewPagerAdapter.setPhotoViewMode("Portrait");
-            List<String> arrImg = new GetAllImage(this).getAllImg();
-            vpImage.setAdapter(viewPagerAdapter);
-            vpImage.setPageTransformer(new MyPageTransformer());
-            viewPagerAdapter.setImage(arrImg);
-            vpImage.setCurrentItem(imgPosition);
-        }
-    }
+
 }
