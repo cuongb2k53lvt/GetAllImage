@@ -42,6 +42,7 @@ public class MainActivity2 extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter(this);
         viewPagerAdapter.setPhotoViewMode("Portrait");
         vpImage.setAdapter(viewPagerAdapter);
+        vpImage.setPageTransformer(new MyPageTransformer());
         viewPagerAdapter.setImage(arrImg);
         vpImage.setCurrentItem(imgPosition);
     }
@@ -54,6 +55,7 @@ public class MainActivity2 extends AppCompatActivity {
             viewPagerAdapter.setPhotoViewMode("Landscape");
             List<String> arrImg = new GetAllImage(this).getAllImg();
             vpImage.setAdapter(viewPagerAdapter);
+            vpImage.setPageTransformer(new MyPageTransformer());
             viewPagerAdapter.setImage(arrImg);
             vpImage.setCurrentItem(imgPosition);
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -61,6 +63,7 @@ public class MainActivity2 extends AppCompatActivity {
             viewPagerAdapter.setPhotoViewMode("Portrait");
             List<String> arrImg = new GetAllImage(this).getAllImg();
             vpImage.setAdapter(viewPagerAdapter);
+            vpImage.setPageTransformer(new MyPageTransformer());
             viewPagerAdapter.setImage(arrImg);
             vpImage.setCurrentItem(imgPosition);
         }
