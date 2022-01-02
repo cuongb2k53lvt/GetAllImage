@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             case readRequestCode:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Log.e(permission,"Read external storage permission granted");
+                    imageAdapter.setData(new GetAllImage(MainActivity.this).getAllImg());
                 }else {
                     Log.e(permission,"Read external storage permission denied");
                 }
