@@ -3,64 +3,71 @@ package com.example.getallimage.Fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
+import com.example.getallimage.Adapter.FolderAdapter;
+import com.example.getallimage.Adapter.ImageAdapter;
+import com.example.getallimage.Class.AlbumItem;
+import com.example.getallimage.Class.ItemInfo;
+import com.example.getallimage.GetAllImage;
+import com.example.getallimage.OnItemClick;
 import com.example.getallimage.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentFolder#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FragmentFolder extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    RecyclerView rvFolder;
+    FolderAdapter folderAdapter;
     public FragmentFolder() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentFolder.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentFolder newInstance(String param1, String param2) {
-        FragmentFolder fragment = new FragmentFolder();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //Tạo recycler view
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_folder, container, false);
+        View view = inflater.inflate(R.layout.fragment_folder, container, false);
+        rvFolder = view.findViewById(R.id.rvFolder);
+        ArrayList<String> arrFolderName = new ArrayList<>();
+        String folderName = "";
+        //Lấy danh sách album item
+        try {
+            List<AlbumItem> arrAlbumItem = new GetAllImage(getContext()).getAllImg();
+            for (int i = 0; i < arrAlbumItem.size(); i++){
+                if(!folderName.equals(arrAlbumItem.get(i).getFolderName())){
+                    folderName = arrAlbumItem.get(i).getFolderName();
+                    if(!arrFolderName.contains(folderName)){
+                        arrFolderName.add(folderName);
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        folderAdapter = new FolderAdapter(arrFolderName,3);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false);
+        rvFolder.setLayoutManager(linearLayoutManager);
+        rvFolder.setAdapter(folderAdapter);
+        return view;
+    }
+    public void changeColumnNumber(int numberCol){
+        folderAdapter.setColumnNumber(numberCol);
     }
 }
