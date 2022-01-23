@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item android:id="@+id/allimg_nav"
+            android:title="All Image"
+            android:icon="@drawable/ic_img_nav"/>
+    <item android:id="@+id/folder_nav"
+            android:title="Folder"
+            android:icon="@drawable/ic_folder_nav"/>
 </menu>

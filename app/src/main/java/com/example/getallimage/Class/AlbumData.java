@@ -1,2 +1,5 @@
-package com.example.getallimage.Class;public class AlbumData {
+package com.example.getallimage.Class;
+
+public class AlbumData {
+
 }

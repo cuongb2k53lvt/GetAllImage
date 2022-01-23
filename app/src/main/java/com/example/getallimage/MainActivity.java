@@ -3,13 +3,23 @@ package com.example.getallimage;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,14 +30,20 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.getallimage.Adapter.ImageAdapter;
+import com.example.getallimage.Adapter.ViewPagerAdapter;
+import com.example.getallimage.Class.AlbumItem;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,6 +54,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv;
     Button btnColNumb;
     ImageAdapter imageAdapter;
+    ViewPager2 vpImage2;
+    ViewPagerAdapter viewPagerAdapter;
     static final String permission = "PERMISSION";
     static final int readRequestCode = 1;
     int numbColumn = 1;
@@ -58,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         rv = findViewById(R.id.rv);
         btnColNumb = findViewById(R.id.btnColNumb);
+        vpImage2 = findViewById(R.id.vpImage2);
         //Ẩn action bar
         getSupportActionBar().hide();
         //Ẩn navigation
@@ -72,12 +92,17 @@ public class MainActivity extends AppCompatActivity {
         requestPermission();
         //tạo recycler view và adapter
         imageAdapter = new ImageAdapter(MainActivity.this);
+        rv.setNestedScrollingEnabled(false);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,numbColumn);
         rv.setLayoutManager(gridLayoutManager);
         rv.setAdapter(imageAdapter);
         //set animation và ảnh cho recycler view
         layoutAnimationController = AnimationUtils.loadLayoutAnimation(this,R.anim.layout_animation);
-        imageAdapter.setData(new GetAllImage(MainActivity.this).getAllImg());
+        try {
+            imageAdapter.setData(new GetAllImage(MainActivity.this).getAllImg());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         //Tạo popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -95,7 +120,15 @@ public class MainActivity extends AppCompatActivity {
         arrCheckBox.add(cb4);
         arrCheckBox.add(cb5);
         arrCheckBox.add(cb6);
-        //Chuyển sang màn hình 2, truyền index ảnh
+        //Tạo viewpager adapter
+        viewPagerAdapter = new ViewPagerAdapter(this);
+        vpImage2.setAdapter(viewPagerAdapter);
+        vpImage2.setPageTransformer(new MyPageTransformer());
+        try {
+            viewPagerAdapter.setImage(new GetAllImage(this).getAllImg());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         imageAdapter.setOnImageClick(new OnItemClick() {
             @Override
             public void onClick(int position) {
@@ -131,7 +164,11 @@ public class MainActivity extends AppCompatActivity {
             case readRequestCode:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Log.e(permission,"Read external storage permission granted");
-                    imageAdapter.setData(new GetAllImage(MainActivity.this).getAllImg());
+                    try {
+                        imageAdapter.setData(new GetAllImage(MainActivity.this).getAllImg());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }else {
                     Log.e(permission,"Read external storage permission denied");
                 }
@@ -139,19 +176,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void saveToSdCardButton(View view) {
+    public void saveToSdCardButton(View view) throws ParseException {
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),"imgphoto2.txt");
         saveFile(file);
     }
 
-    public void saveFile(File file){
+    public void saveFile(File file) throws ParseException {
         //Lấy uri ảnh
-        List<String> arrImg = new GetAllImage(MainActivity.this).getAllImg();
+        List<AlbumItem> arrImg = new GetAllImage(MainActivity.this).getAllImg();
         try {
             //Ghi tên ảnh
             Writer writer  =new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
             for (int i = 0; i<arrImg.size(); i++){
-                writer.write(arrImg.get(i)+" ");
+                writer.write(arrImg.get(i).getTitle()+" ");
             }
             writer.close();
         } catch (UnsupportedEncodingException e) {
@@ -219,5 +256,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

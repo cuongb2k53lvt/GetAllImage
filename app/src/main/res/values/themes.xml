@@ -20,4 +20,10 @@
         <item name="android:windowEnterAnimation">@anim/show_select_col_anim</item>
         <item name="android:windowExitAnimation">@anim/hide_select_col_anim</item>
     </style>
+    <style name="Theme.GetAllImage.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.GetAllImage.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.GetAllImage.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

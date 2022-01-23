@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/select_column"
+        android:icon="@drawable/ic_column"
+        android:title="Select column"
+        app:showAsAction="always">
+        <menu>
+            <item android:id="@+id/column_a"
+                android:title="3 cột"/>
+            <item android:id="@+id/column_b"
+                android:title="4 cột"/>
+        </menu>
+    </item>
+    <item android:id="@+id/sort_by_name"
+        android:title="Sắp xếp theo tên"/>
+    <item android:id="@+id/sort_by_date"
+        android:title="Sắp xếp theo thời gian"/>
+    <item android:id="@+id/setting"
+        android:title="Setting"/>
 </menu>

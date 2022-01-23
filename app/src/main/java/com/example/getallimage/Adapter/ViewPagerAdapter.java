@@ -1,31 +1,39 @@
 package com.example.getallimage.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.getallimage.Class.AlbumItem;
+import com.example.getallimage.OnItemClick;
 import com.example.getallimage.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.ViewHolder> {
     Context context;
-    List<String> arrPhoto;
+    List<AlbumItem> arrPhoto;
     public ViewPagerAdapter(Context context){
         this.context = context;
     }
 
-    public void setImage(List<String> arrPhoto){
+    public void setImage(List<AlbumItem> arrPhoto){
         this.arrPhoto = arrPhoto;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,8 +43,8 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String uri = arrPhoto.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        String uri = arrPhoto.get(position).getPath();
         if(uri == null){
             return;
         }
@@ -54,8 +62,10 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            view = itemView;
             imageView = itemView.findViewById(R.id.imgViewPager);
         }
     }

@@ -15,13 +15,16 @@ import android.widget.Toast;
 
 import com.example.getallimage.Adapter.ImageAdapter;
 import com.example.getallimage.Adapter.ViewPagerAdapter;
+import com.example.getallimage.Class.AlbumItem;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class MainActivity2 extends AppCompatActivity {
     ViewPager2 vpImage;
     ViewPagerAdapter viewPagerAdapter;
     static int imgPosition;
+    String folderName = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +41,24 @@ public class MainActivity2 extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //set adapter vp, hiển thị và lấy index ảnh
-        List<String> arrImg = new GetAllImage(this).getAllImg();
+        List<AlbumItem> arrImg = null;
+
         imgPosition = getIntent().getExtras().getInt("ImgPosition");
+        folderName = getIntent().getExtras().getString("Folder");
+        if(folderName.equals("all")){
+            try {
+                arrImg = new GetAllImage(this).getAllImg();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else {
+            arrImg = new GetAllImage(this).getAllImgByFolder(folderName);
+        }
         viewPagerAdapter = new ViewPagerAdapter(this);
         vpImage.setAdapter(viewPagerAdapter);
         vpImage.setPageTransformer(new MyPageTransformer());
         viewPagerAdapter.setImage(arrImg);
-        vpImage.setCurrentItem(imgPosition);
+        vpImage.setCurrentItem(imgPosition,false);
         Log.e("BUG","1");
     }
 
